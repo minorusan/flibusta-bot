@@ -114,7 +114,7 @@ async function isValidURL(bookURL){
 }
 
 async function checkBookAndReply(ctx, book){
-    let fb2URL = flibusta.getUrl(book.id, 'fb2')
+    let fb2URL = flibusta.getUrl(book.id, 'epub')
 
     try{
         let isFb2Valid = await isValidURL(fb2URL)
