@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require('telegraf')
 const flibusta = require('flibusta-api')
 const axios = require('axios')
 var users = []
-const bot = new Telegraf('2083172598:AAGmulOkVjxq0f3lHbzeuxwPwdPtezbk8Yo');
+const bot = new Telegraf('2083172598:AAGmulOkVjxq0f3lHbzeuxwPwdPtezbk8Yo'); //new Telegraf('6858195985:AAG0IrQTBERY3OxNasePZuaGDAfG7pHRf2I');
 
 
 bot.command('start', ctx => {
@@ -75,11 +75,11 @@ bot.action(/dbfb2+/, (ctx) => {
     getBook(ctx, id, 'fb2')
 });
 
-bot.action(/dbmobi+/, (ctx) => {
+bot.action(/dbepub+/, (ctx) => {
     let id = ctx.match.input.substring(6);
 
     // add all necessary validations for the product_id here
-    getBook(ctx, id, 'mobi')
+    getBook(ctx, id, 'epub')
 });
 
 bot.action(/dbpdf+/, (ctx) => {
@@ -115,17 +115,25 @@ async function isValidURL(bookURL){
 
 async function checkBookAndReply(ctx, book){
     let fb2URL = flibusta.getUrl(book.id, 'fb2')
-
+    //let pdfUrl = flibusta.getUrl(book.id, 'pdf')
+    let epubUrl = flibusta.getUrl(book.id, 'epub')
     try{
         let isFb2Valid = await isValidURL(fb2URL)
-        if(isFb2Valid){
-            ctx.replyWithMarkdown(
-            `${book.author} - ${book.title}\n\n _Скачать по ссылке:_ [FB2](${fb2URL})`,
-               Markup.inlineKeyboard([
-               Markup.button.callback('Скачать файлом', `dbfb2${book.id}`),
-               ]))
+        //let isPdfValid = await isValidURL(pdfUrl)
+        let isEpubValid = await isValidURL(epubUrl)
+
+        let markupArray = [];
+        if (isFb2Valid) markupArray.push(Markup.button.callback('⬇️ fb2', `dbfb2${book.id}`));
+        //if (isPdfValid) markupArray.push(Markup.button.callback('⬇️ pdf', `dbpdf${book.id}`));
+        if (isEpubValid) markupArray.push(Markup.button.callback('⬇️ epub', `dbepub${book.id}`))
+
+        var fb2url = isFb2Valid ? `[FB2](${fb2URL})` : ''
+        //var pdfurl = isPdfValid ? `[PDF](${pdfUrl})` : ''
+        var epuburl = isEpubValid ? `[EPUB](${epubUrl})` : ''
+        ctx.replyWithMarkdown(
+            `${book.author} - ${book.title}\n\n _Скачать по ссылке:_ ${fb2url} ${pdfurl} ${epuburl}`,
+               Markup.inlineKeyboard(markupArray))
             return true
-        }
     }
     catch(error){
         return false;
