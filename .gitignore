@@ -1,12 +1,28 @@
-# Node build artifacts
-node_modules
-npm-debug.log
+# Dependencies
+node_modules/
 
-# Local development
-*.env
-*.dev
+# Build output
+dist/
+
+# Environment
+.env
+
+# Logs
+*.log
+logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Docker
-Dockerfile
-docker-compose.yml
+# TypeScript cache
+*.tsbuildinfo
+
+# Telegram session
+*.session
